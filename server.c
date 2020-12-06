@@ -7,7 +7,6 @@
 #include <netinet/in.h>
 #include <arpa/inet.h>
 
-#define PORT 5000
 void writeToLogFile(char buffer[], char address[], int port);
 void writeToLogFile(char buffer[], char address[], int port){
 	FILE *fp;
@@ -23,8 +22,14 @@ void writeToLogFile(char buffer[], char address[], int port){
 	fclose(fp);
 	return;
 }
-int main(){
-
+int main(int argc, char *argv[]){
+	// catch wrong input
+	if(argc != 2){
+		printf("Please input port number\n");
+		return 0;
+	}
+	//Receive port number
+	int port = atoi(argv[1]);
 	int sockfd, ret;
 	 struct sockaddr_in serverAddr;
 
@@ -45,15 +50,15 @@ int main(){
 
 	memset(&serverAddr, '\0', sizeof(serverAddr));
 	serverAddr.sin_family = AF_INET;
-	serverAddr.sin_port = htons(PORT);
-	serverAddr.sin_addr.s_addr = inet_addr("127.0.0.1");
+	serverAddr.sin_port = htons(port);
+	serverAddr.sin_addr.s_addr = INADDR_ANY;  //ip server
 
 	ret = bind(sockfd, (struct sockaddr*)&serverAddr, sizeof(serverAddr));
 	if(ret < 0){
 		printf("[-]Error in binding.\n");
 		exit(1);
 	}
-	printf("[+]Bind to port %d\n", 4444);
+	printf("[+]Bind to port %d\n", port);
 
 	if(listen(sockfd, 10) == 0){
 		printf("[+]Listening....\n");

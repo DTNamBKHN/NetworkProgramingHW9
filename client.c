@@ -7,9 +7,15 @@
 #include <netinet/in.h>
 #include <arpa/inet.h>
 
-#define PORT 5000
-
-int main(){
+int main(int argc, char *argv[]){
+	// catch wrong input
+	if(argc!=3){
+		printf("Please input IP address and port number\n");
+		return 0;
+	}
+	//Receive ipaddress and port number
+	char *ip_address = argv[1];
+	int port = atoi(argv[2]);
 
 	int clientSocket, ret;
 	struct sockaddr_in serverAddr;
@@ -24,8 +30,8 @@ int main(){
 
 	memset(&serverAddr, '\0', sizeof(serverAddr));
 	serverAddr.sin_family = AF_INET;
-	serverAddr.sin_port = htons(PORT);
-	serverAddr.sin_addr.s_addr = inet_addr("127.0.0.1");
+	serverAddr.sin_port = htons(port);
+	serverAddr.sin_addr.s_addr = inet_addr(ip_address);
 
 	ret = connect(clientSocket, (struct sockaddr*)&serverAddr, sizeof(serverAddr));
 	if(ret < 0){
